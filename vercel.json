@@ -14,7 +14,14 @@
       "use": "@vercel/node"
     }
   ],
-  "commands": {
-    "build": "cd frontend && vite build"
+  "frameworks": {
+    "node": {
+      "version": "16.14.0",
+      "bin": "node",
+      "buildCommand": "npm run build",
+      "devCommand": "npm run dev",
+      "installCommand": "npm install --prefer-offline --no-audit --progress=false",
+      "memory": 1024
+    }
   }
 }
