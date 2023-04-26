@@ -28,7 +28,7 @@ export const StyledJoinRoomModal = styled(Box)`
 `;
 
 export const StyledIntroduction = styled.div`
-  padding: 30px;
+  padding: 30px 50px;
   height: 50vh;
   background-color: white;
   border-radius: 15px;

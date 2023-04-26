@@ -1,10 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { App } from './Pages/App';
 import { StoreStateProvider } from './Context/index';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.render(
   <StoreStateProvider>
     <App />
-  </StoreStateProvider>
+  </StoreStateProvider>,
+  document.getElementById('root')
 );

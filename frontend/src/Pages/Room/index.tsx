@@ -17,8 +17,7 @@ const endPoint =
 const socket = io(endPoint);
 
 export const Room = () => {
-  const { roomId, playersNum, setRoomId, setIsStarted, isStarted, isHost } =
-    useStoreState();
+  const { roomId, playersNum, isHost } = useStoreState();
 
   const navigate = useNavigate();
 

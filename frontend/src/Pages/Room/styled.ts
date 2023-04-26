@@ -21,7 +21,7 @@ export const StyledRoom = styled.div`
 `;
 
 export const StyledRoomId = styled.div`
-  padding: 20px;
+  padding: 20px 30px;
   background-color: whitesmoke;
   display: flex;
   justify-content: center;

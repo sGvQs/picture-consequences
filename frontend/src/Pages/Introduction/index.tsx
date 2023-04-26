@@ -41,7 +41,6 @@ export const Introduction = () => {
   socket.on('found_room', (data) => {
     socket.emit('join_room', data);
     navigate(`/roomId/${data}`);
-    setIsModalOpen(false);
   });
 
   socket.on('notFound_room', () => {

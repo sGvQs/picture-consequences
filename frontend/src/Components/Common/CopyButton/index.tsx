@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import IconButton from '@mui/material/IconButton';
 import { Done } from '@styled-icons/material-rounded';
 import { ContentCopy } from '@styled-icons/material';
@@ -10,7 +10,7 @@ export const CopyButton = ({ text }: { text: string }) => {
 
   return (
     <>
-      <CopyToClipboard text={text}>
+      <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
         {copied ? (
           <Tooltip title="Copied!" placement="top">
             <IconButton>
@@ -20,7 +20,7 @@ export const CopyButton = ({ text }: { text: string }) => {
         ) : (
           <Tooltip title="Copy" placement="top">
             <IconButton>
-              <ContentCopy size={20} onClick={() => setCopied(true)} />
+              <ContentCopy size={20} />
             </IconButton>
           </Tooltip>
         )}
