@@ -13,5 +13,8 @@
       "src": "backend/**",
       "use": "@vercel/node"
     }
-  ]
+  ],
+  "commands": {
+    "build": "cd frontend && vite build"
+  }
 }
