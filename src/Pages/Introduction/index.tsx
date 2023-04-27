@@ -30,12 +30,6 @@ export const Introduction = () => {
   const [joinRoomId, setJoinRoomId] = React.useState<string>();
   const navigate = useNavigate();
 
-  console.log('process.env.NODE_ENV : ' + process.env.NODE_ENV);
-  console.log(
-    '"http://picture-consequences-backend.com/" : ' +
-      'http://picture-consequences-backend.com/'
-  );
-
   socket.on('created_roomId', (data) => {
     setRoomId(data);
     setIsHost(true);
