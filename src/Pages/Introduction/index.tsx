@@ -18,7 +18,7 @@ import { TitleText } from '../../Components/TitleText';
 
 const endPoint =
   process.env.NODE_ENV === 'development'
-    ? import.meta.env.VITE_LOCAL_URL
+    ? 'http://localhost:5000'
     : process.env.PRD_URL;
 
 const socket = io(endPoint);
@@ -29,6 +29,9 @@ export const Introduction = () => {
   const [rommNotFound, setRoomNotFound] = React.useState<boolean>(false);
   const [joinRoomId, setJoinRoomId] = React.useState<string>();
   const navigate = useNavigate();
+
+  console.log('process.env.NODE_ENV : ' + process.env.NODE_ENV);
+  console.log('process.env.PRD_URL : ' + process.env.PRD_URL);
 
   socket.on('created_roomId', (data) => {
     setRoomId(data);

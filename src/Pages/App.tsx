@@ -8,7 +8,7 @@ import { Game } from './Game';
 
 const endPoint =
   process.env.NODE_ENV === 'development'
-    ? import.meta.env.VITE_LOCAL_URL
+    ? 'http://localhost:5000'
     : process.env.PRD_URL;
 
 const socket = io(endPoint);
