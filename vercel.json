@@ -1,0 +1,10 @@
+{
+  "routes": [
+    {
+      "src": "/.*",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://picture-consequences-backend.herokuapp.com"
+      }
+    }
+  ]
+}
