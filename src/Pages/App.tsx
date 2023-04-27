@@ -9,7 +9,7 @@ import { Game } from './Game';
 const endPoint =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:5000'
-    : 'http://picture-consequences-backend.com/';
+    : 'https://picture-consequences-backend.herokuapp.com/';
 
 const socket = io(endPoint);
 
