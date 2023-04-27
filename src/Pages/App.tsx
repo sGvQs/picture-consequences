@@ -11,6 +11,24 @@ const endPoint =
     ? 'http://localhost:5000'
     : 'https://picture-consequences-backend.herokuapp.com/';
 
+fetch('https://picture-consequences-backend.herokuapp.com/', {
+  headers: {
+    Origin: 'https://picture-consequences-app.vercel.app',
+  },
+})
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
+
 const socket = io(endPoint);
 
 export const App = () => {
