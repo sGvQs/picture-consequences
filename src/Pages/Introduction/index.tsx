@@ -19,7 +19,7 @@ import { TitleText } from '../../Components/TitleText';
 const endPoint =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:5000'
-    : process.env.PRD_URL;
+    : 'http://picture-consequences-backend.com/';
 
 const socket = io(endPoint);
 
@@ -31,7 +31,10 @@ export const Introduction = () => {
   const navigate = useNavigate();
 
   console.log('process.env.NODE_ENV : ' + process.env.NODE_ENV);
-  console.log('process.env.PRD_URL : ' + process.env.PRD_URL);
+  console.log(
+    '"http://picture-consequences-backend.com/" : ' +
+      'http://picture-consequences-backend.com/'
+  );
 
   socket.on('created_roomId', (data) => {
     setRoomId(data);

@@ -9,7 +9,7 @@ import { Game } from './Game';
 const endPoint =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:5000'
-    : process.env.PRD_URL;
+    : 'http://picture-consequences-backend.com/';
 
 const socket = io(endPoint);
 
