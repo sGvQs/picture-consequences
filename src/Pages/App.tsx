@@ -11,14 +11,6 @@ const endPoint =
     ? 'http://localhost:5000'
     : 'https://picture-consequences-backend.herokuapp.com/';
 
-fetch('https://picture-consequences-backend.herokuapp.com/', {
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin':
-      'https://picture-consequences-backend.herokuapp.com',
-  },
-});
-
 const socket = io(endPoint);
 
 export const App = () => {
