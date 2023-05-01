@@ -5,10 +5,16 @@ type StoreProps = {
   playersNum: number;
   isStarted: boolean;
   isHost: boolean;
+  clientId: string;
+  clientLists: string[] | undefined;
+  sectionNum: number;
   setRoomId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayersNum: React.Dispatch<React.SetStateAction<number>>;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
   setIsHost: React.Dispatch<React.SetStateAction<boolean>>;
+  setClientId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setClientsLists: React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  setSectionNum: React.Dispatch<React.SetStateAction<number>>;
 };
 
 type Children = {
@@ -32,16 +38,25 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
   const [playersNum, setPlayersNum] = React.useState<number>(0);
   const [isStarted, setIsStarted] = React.useState<boolean>(false);
   const [isHost, setIsHost] = React.useState<boolean>(false);
+  const [clientId, setClientId] = React.useState<string | undefined>();
+  const [clientLists, setClientsLists] = React.useState<string[] | undefined>();
+  const [sectionNum, setSectionNum] = React.useState<number>(0);
 
   const providerValue = {
     roomId,
     playersNum,
     isStarted,
     isHost,
+    clientId,
+    clientLists,
+    sectionNum,
     setRoomId,
     setPlayersNum,
     setIsStarted,
     setIsHost,
+    setClientId,
+    setClientsLists,
+    setSectionNum,
   };
 
   return <Store.Provider value={providerValue}>{children}</Store.Provider>;

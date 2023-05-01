@@ -1,6 +1,5 @@
-import { useStoreState } from '../../Context';
+import { useStoreState } from '../../Context/StoreStateProvider';
 import React from 'react';
-import io from 'socket.io-client';
 import { StyledRoom, StyledRoomId, StyledRoomWrap } from './styled';
 import { Typography } from '../../Components/Common/Typography';
 import { Lottie } from '../../Components/Common/Lottie';
@@ -8,22 +7,25 @@ import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { CopyButton } from '../../Components/Common/CopyButton';
-
-const endPoint =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:5000'
-    : 'https://picture-consequences-backend.herokuapp.com/';
-
-const socket = io(endPoint);
+import { SocketIOContext } from '../../Context/SocketIOProvider';
 
 export const Room = () => {
-  const { roomId, playersNum, isHost } = useStoreState();
+  const { roomId, playersNum, isHost, clientLists } = useStoreState();
 
   const navigate = useNavigate();
 
-  socket.on('started_game', () => {
-    navigate(`/game/${roomId}`);
-  });
+  const { sendNotificateJoiningEvent, startGame } =
+    React.useContext(SocketIOContext);
+
+  React.useEffect(() => {
+    sendNotificateJoiningEvent();
+  }, []);
+
+  React.useEffect(() => {
+    if (clientLists) {
+      navigate(`/game/${roomId}`);
+    }
+  }, [clientLists]);
 
   return (
     <StyledRoomWrap>
@@ -50,7 +52,7 @@ export const Room = () => {
                   variant="contained"
                   color="inherit"
                   onClick={() => {
-                    socket.emit('start_game');
+                    startGame();
                   }}
                 >
                   START

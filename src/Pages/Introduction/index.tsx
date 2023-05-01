@@ -1,4 +1,3 @@
-import io from 'socket.io-client';
 import { Lottie } from '../../Components/Common/Lottie';
 import { Typography } from '../../Components/Common/Typography';
 import { useNavigate } from 'react-router-dom';
@@ -9,53 +8,31 @@ import {
   StyledCreateNewRoomWrap,
   StyledJoinRoomModal,
 } from './styled';
-import { useStoreState } from '../../Context';
+import { useStoreState } from '../../Context/StoreStateProvider';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import React from 'react';
 import { TitleText } from '../../Components/TitleText';
-
-const endPoint =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:5000'
-    : 'https://picture-consequences-backend.herokuapp.com/';
-
-const socket = io(endPoint);
+import { SocketIOContext } from '../../Context/SocketIOProvider';
 
 export const Introduction = () => {
-  const { setRoomId, setIsHost } = useStoreState();
+  const { clientId, roomId } = useStoreState();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [rommNotFound, setRoomNotFound] = React.useState<boolean>(false);
   const [joinRoomId, setJoinRoomId] = React.useState<string>();
   const navigate = useNavigate();
+  const { createNewRoom, joinRoom } = React.useContext(SocketIOContext);
 
-  socket.on('created_roomId', (data) => {
-    setRoomId(data);
-    setIsHost(true);
-    const id = data;
-    socket.emit('join_room', id);
-    navigate(`/roomId/${id}`);
-  });
+  React.useEffect(() => {
+    if (roomId && clientId) {
+      navigate(`/roomId/${roomId}`);
+    }
+  }, [clientId, roomId]);
 
-  socket.on('found_room', (data) => {
-    socket.emit('join_room', data);
-    navigate(`/roomId/${data}`);
-  });
-
-  socket.on('notFound_room', () => {
-    setRoomId(undefined);
-    setRoomNotFound(true);
-  });
-
-  const createNewRoom = () => {
-    socket.emit('create_room');
-  };
-
-  const joinRoom = () => {
-    setRoomId(joinRoomId);
-    socket.emit('serch_room', joinRoomId);
+  const handleJoin = () => {
     setRoomNotFound(false);
+    joinRoom(joinRoomId);
   };
 
   return (
@@ -78,7 +55,7 @@ export const Introduction = () => {
           <Button
             variant="outlined"
             disabled={joinRoomId ? false : true}
-            onClick={() => joinRoom()}
+            onClick={() => handleJoin()}
           >
             SUBMIT
           </Button>

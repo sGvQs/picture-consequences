@@ -1,4 +1,4 @@
-import { useStoreState } from '../../Context';
+import { useStoreState } from '../../Context/StoreStateProvider';
 import CanvasDraw, { CanvasDrawProps } from 'react-canvas-draw';
 import React from 'react';
 import io from 'socket.io-client';
@@ -15,16 +15,27 @@ const socket = io(endPoint);
 export const Game = () => {
   const height = useWindowHeight();
   const width = useWindowWidth();
-  const { isHost } = useStoreState();
+  const { sectionNum, clientLists, clientId, setSectionNum, roomId } =
+    useStoreState();
   const canvasRef = React.useRef<CanvasDraw>(null);
 
+  console.log({
+    sectionNum: sectionNum,
+    clientLists: clientLists,
+    clientId: clientId,
+  });
+
   socket.on('drawing', (data) => {
-    if (isHost) return;
+    if (clientLists[sectionNum] === clientId) return;
     canvasRef.current?.loadSaveData(data, true);
   });
 
   socket.on('clear', () => {
     canvasRef.current?.clear();
+  });
+
+  socket.on('increment_section_num', () => {
+    setSectionNum(sectionNum + 1);
   });
 
   const handleClear = () => {
@@ -33,8 +44,14 @@ export const Game = () => {
   };
 
   const handleDraw = () => {
-    if (!isHost) return;
-    socket.emit('drawing', canvasRef.current?.getSaveData());
+    if (clientLists[sectionNum] !== clientId) return;
+    console.log(roomId);
+    socket.emit('drawing', [canvasRef.current?.getSaveData(), roomId]);
+  };
+
+  const handleDone = () => {
+    setSectionNum(sectionNum + 1);
+    socket.emit('increment_section_num');
   };
 
   return (
@@ -44,9 +61,10 @@ export const Game = () => {
         onChange={handleDraw}
         canvasHeight={height - 200}
         canvasWidth={width - 200}
-        disabled={!isHost}
+        disabled={clientLists[sectionNum] !== clientId}
       />
       <button onClick={handleClear}>Clear</button>
+      <button onClick={handleDone}>done</button>
     </>
   );
 };
