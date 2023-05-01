@@ -33,6 +33,7 @@ export const Introduction = () => {
   const handleJoin = () => {
     setRoomNotFound(false);
     joinRoom(joinRoomId);
+    setRoomNotFound(true);
   };
 
   return (
@@ -60,7 +61,12 @@ export const Introduction = () => {
             SUBMIT
           </Button>
           {rommNotFound && (
-            <Typography text={'THERE IS NO ROOM'} fontSize={20} isBold={true} />
+            <Typography
+              text={'THERE IS NO ROOM'}
+              fontSize={20}
+              isBold
+              isError
+            />
           )}
         </StyledJoinRoomModal>
       </Modal>

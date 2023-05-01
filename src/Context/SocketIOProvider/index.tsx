@@ -62,6 +62,15 @@ export const SocketIOProvider = ({ children }) => {
     setClientsLists(clientsList);
   });
 
+  socket.on('not_found', (roomId) => {
+    setRoomId(undefined);
+    console.error({
+      message: '404 error: room is not exist',
+      status: 404,
+      roomId,
+    });
+  });
+
   return (
     <SocketIOContext.Provider
       value={{
