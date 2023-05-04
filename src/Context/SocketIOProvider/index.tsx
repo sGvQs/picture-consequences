@@ -20,6 +20,7 @@ export const SocketIOProvider = ({ children }) => {
     setClientId,
     setPlayersNum,
     setClientsLists,
+    setCanvasData,
   } = useStoreState();
 
   const createNewRoom = () => {
@@ -41,8 +42,11 @@ export const SocketIOProvider = ({ children }) => {
     socket.emit('join_room', typedRoomId);
   };
 
+  const sendDrawingData = (request) => {
+    socket.emit('drawing', request);
+  };
+
   socket.on('created_room', (data) => {
-    console.log(data);
     setRoomId(data.roomId);
     setClientId(data.clientId);
     setIsHost(true);
@@ -71,6 +75,10 @@ export const SocketIOProvider = ({ children }) => {
     });
   });
 
+  socket.on('drawing', (canvasData) => {
+    setCanvasData(canvasData);
+  });
+
   return (
     <SocketIOContext.Provider
       value={{
@@ -79,6 +87,7 @@ export const SocketIOProvider = ({ children }) => {
         sendNotificateJoiningEvent,
         startGame,
         joinRoom,
+        sendDrawingData,
       }}
     >
       {children}

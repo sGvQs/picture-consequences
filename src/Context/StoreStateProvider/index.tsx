@@ -8,6 +8,7 @@ type StoreProps = {
   clientId: string;
   clientLists: string[] | undefined;
   sectionNum: number;
+  canvasData: string | null;
   setRoomId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayersNum: React.Dispatch<React.SetStateAction<number>>;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,6 +16,7 @@ type StoreProps = {
   setClientId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setClientsLists: React.Dispatch<React.SetStateAction<string[] | undefined>>;
   setSectionNum: React.Dispatch<React.SetStateAction<number>>;
+  setCanvasData: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 type Children = {
@@ -40,7 +42,8 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
   const [isHost, setIsHost] = React.useState<boolean>(false);
   const [clientId, setClientId] = React.useState<string | undefined>();
   const [clientLists, setClientsLists] = React.useState<string[] | undefined>();
-  const [sectionNum, setSectionNum] = React.useState<number>(0);
+  const [sectionNum, setSectionNum] = React.useState<number>(1);
+  const [canvasData, setCanvasData] = React.useState<string | null>(null);
 
   const providerValue = {
     roomId,
@@ -50,6 +53,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     clientId,
     clientLists,
     sectionNum,
+    canvasData,
     setRoomId,
     setPlayersNum,
     setIsStarted,
@@ -57,6 +61,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     setClientId,
     setClientsLists,
     setSectionNum,
+    setCanvasData,
   };
 
   return <Store.Provider value={providerValue}>{children}</Store.Provider>;
