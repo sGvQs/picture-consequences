@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRandomAnimal } from '../../Hooks/useRandomAnimal';
 
 type StoreProps = {
   roomId: string | undefined;
@@ -9,6 +10,9 @@ type StoreProps = {
   clientLists: string[] | undefined;
   sectionNum: number;
   canvasData: string | null;
+  timeLeft: number;
+  isDone: boolean;
+  animal: string | undefined;
   setRoomId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayersNum: React.Dispatch<React.SetStateAction<number>>;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,6 +21,9 @@ type StoreProps = {
   setClientsLists: React.Dispatch<React.SetStateAction<string[] | undefined>>;
   setSectionNum: React.Dispatch<React.SetStateAction<number>>;
   setCanvasData: React.Dispatch<React.SetStateAction<string | null>>;
+  setTimeLeft: React.Dispatch<React.SetStateAction<number>>;
+  setIsDone: React.Dispatch<React.SetStateAction<boolean>>;
+  setAnimal: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 type Children = {
@@ -44,6 +51,9 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
   const [clientLists, setClientsLists] = React.useState<string[] | undefined>();
   const [sectionNum, setSectionNum] = React.useState<number>(1);
   const [canvasData, setCanvasData] = React.useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = React.useState<number>(100);
+  const [isDone, setIsDone] = React.useState<boolean>(false);
+  const [animal, setAnimal] = React.useState<string | undefined>(undefined);
 
   const providerValue = {
     roomId,
@@ -54,6 +64,9 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     clientLists,
     sectionNum,
     canvasData,
+    timeLeft,
+    isDone,
+    animal,
     setRoomId,
     setPlayersNum,
     setIsStarted,
@@ -62,6 +75,9 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     setClientsLists,
     setSectionNum,
     setCanvasData,
+    setTimeLeft,
+    setIsDone,
+    setAnimal,
   };
 
   return <Store.Provider value={providerValue}>{children}</Store.Provider>;

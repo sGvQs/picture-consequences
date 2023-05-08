@@ -1,3 +1,4 @@
+import { request } from 'http';
 import React, { createContext } from 'react';
 import io from 'socket.io-client';
 import { useStoreState } from '../StoreStateProvider';
@@ -15,12 +16,18 @@ export const SocketIOProvider = ({ children }) => {
   const {
     roomId,
     clientId,
+    sectionNum,
+    isDone,
+    animal,
     setRoomId,
     setIsHost,
     setClientId,
     setPlayersNum,
     setClientsLists,
     setCanvasData,
+    setTimeLeft,
+    setSectionNum,
+    setIsDone,
   } = useStoreState();
 
   const createNewRoom = () => {
@@ -44,6 +51,22 @@ export const SocketIOProvider = ({ children }) => {
 
   const sendDrawingData = (request) => {
     socket.emit('drawing', request);
+  };
+
+  const sendDoneDrawingEvent = () => {
+    socket.emit('done_drawing', roomId);
+  };
+
+  const sendDoneGameEvent = () => {
+    socket.emit('done_game', roomId);
+  };
+
+  const sendAnimal = () => {
+    socket.emit('send_animal', animal);
+  };
+
+  const sendTimeLeft = (request) => {
+    socket.emit('sending_time', request);
   };
 
   socket.on('created_room', (data) => {
@@ -79,6 +102,21 @@ export const SocketIOProvider = ({ children }) => {
     setCanvasData(canvasData);
   });
 
+  socket.on('getting_time', (time) => {
+    setTimeLeft(time);
+  });
+
+  socket.on('done_drawing', () => {
+    if (isDone) return;
+    setIsDone(true);
+    setSectionNum(sectionNum + 1);
+    setTimeLeft(100);
+  });
+
+  socket.on('done_game', (point) => {
+    console.log(point);
+  });
+
   return (
     <SocketIOContext.Provider
       value={{
@@ -88,6 +126,10 @@ export const SocketIOProvider = ({ children }) => {
         startGame,
         joinRoom,
         sendDrawingData,
+        sendTimeLeft,
+        sendDoneDrawingEvent,
+        sendDoneGameEvent,
+        sendAnimal,
       }}
     >
       {children}

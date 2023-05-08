@@ -30,9 +30,7 @@ export const CircularTimer = (
           color="text.secondary"
           fontSize={20}
         >
-          {Math.round(props.value) === 100
-            ? 'FINISH'
-            : `${100 - Math.round(props.value)}s`}
+          {Math.round(props.value) + `s`}
         </Typography>
       </Box>
     </Box>

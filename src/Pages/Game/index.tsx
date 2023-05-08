@@ -19,14 +19,25 @@ export const Game = () => {
     sectionNum,
     clientLists,
     clientId,
-    setSectionNum,
     roomId,
     canvasData,
+    timeLeft,
+    animal,
+    setTimeLeft,
+    setIsDone,
+    setAnimal,
   } = useStoreState();
-  const animal = useRandomAnimal();
-  const { sendDrawingData } = React.useContext(SocketIOContext);
+
+  const {
+    sendDrawingData,
+    sendTimeLeft,
+    sendDoneDrawingEvent,
+    sendDoneGameEvent,
+    sendAnimal,
+  } = React.useContext(SocketIOContext);
   const canvasRef = React.useRef<CanvasDraw>(null);
 
+  // NOTE: 絵が描かれるときのイベント
   React.useEffect(() => {
     if (canvasData === null) {
       canvasRef.current?.clear();
@@ -34,6 +45,49 @@ export const Game = () => {
       canvasRef.current?.loadSaveData(canvasData, true);
     }
   }, [canvasData]);
+
+  // NOTE: タイマーのイベント
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (clientLists[sectionNum - 1] !== clientId) return;
+      setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+    }, 50);
+
+    if (timeLeft === 0) {
+      clearInterval(intervalId);
+      if (clientLists[sectionNum - 1] === clientId) {
+        sendDoneDrawingEvent();
+        if (sectionNum === clientLists.length) {
+          console.log('finished');
+          sendDoneGameEvent();
+        }
+      }
+    }
+
+    if (clientLists[sectionNum - 1] === clientId) {
+      const request = {
+        time: timeLeft,
+        roomId: roomId,
+      };
+      sendTimeLeft(request);
+    }
+
+    if (timeLeft === 50) {
+      setIsDone(false);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft, sectionNum]);
+
+  const randomAnimal = useRandomAnimal();
+
+  // NOTE: 答えのデータを保存する処理
+  React.useEffect(() => {
+    setAnimal(randomAnimal);
+    if (animal && clientLists[sectionNum - 1] === clientId) {
+      sendAnimal();
+    }
+  }, [randomAnimal, animal, sectionNum]);
 
   const handleClear = () => {
     canvasRef.current?.clear();
@@ -57,11 +111,9 @@ export const Game = () => {
   return (
     <StyledGameWrap>
       {clientLists[sectionNum - 1] === clientId && (
-        <Typography text={'YOUR TURN'} fontSize={16} isBold />
-      )}
-      {clientLists[sectionNum - 1] === clientId && (
         <Typography text={animal} fontSize={30} isBold />
       )}
+      <CircularTimer value={timeLeft} />
       <CanvasDraw
         ref={canvasRef}
         style={{ borderRadius: '10px' }}
