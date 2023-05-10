@@ -5,6 +5,7 @@ type TypographyProps = {
   fontSize?: number;
   isBold?: boolean;
   isError?: boolean;
+  isCorrect?: boolean;
 };
 
 export const Typography: React.VFC<TypographyProps> = ({
@@ -12,9 +13,15 @@ export const Typography: React.VFC<TypographyProps> = ({
   fontSize,
   isBold,
   isError,
+  isCorrect,
 }) => {
   return (
-    <StyledTypography fontSize={fontSize} isBold={isBold} isError={isError}>
+    <StyledTypography
+      fontSize={fontSize}
+      isBold={isBold}
+      isError={isError}
+      isCorrect={isCorrect}
+    >
       {text}
     </StyledTypography>
   );

@@ -27,6 +27,21 @@ export const StyledJoinRoomModal = styled(Box)`
   justify-content: center;
 `;
 
+export const StyledNameModal = styled(Box)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const StyledIntroduction = styled.div`
   padding: 30px 50px;
   height: 50vh;

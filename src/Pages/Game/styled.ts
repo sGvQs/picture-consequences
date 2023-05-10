@@ -9,3 +9,15 @@ export const StyledGameWrap = styled.div`
   flex-direction: column;
   gap: 10px;
 `;
+
+export const StyledCommentsWrap = styled.div`
+  height: calc(100vh - 300px);
+  width: 200px;
+  border: solid 1px #000;
+  border-radius: 10px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: scroll;
+`;

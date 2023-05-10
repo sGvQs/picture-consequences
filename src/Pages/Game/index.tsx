@@ -3,14 +3,16 @@ import CanvasDraw from 'react-canvas-draw';
 import React from 'react';
 import { useWindowHeight } from '../../Hooks/useWindowHeight';
 import { useWindowWidth } from '../../Hooks/useWindowWidth';
-import { StyledGameWrap } from './styled';
+import { StyledCommentsWrap, StyledGameWrap } from './styled';
 import { Typography } from '../../Components/Common/Typography';
 import { useRandomAnimal } from '../../Hooks/useRandomAnimal';
 import { Delete } from '@styled-icons/fluentui-system-filled';
+import { Send } from '@styled-icons/boxicons-solid';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { SocketIOContext } from '../../Context/SocketIOProvider';
 import { CircularTimer } from '../../Components/Common/Timer';
+import { TextField } from '@mui/material';
 
 export const Game = () => {
   const height = useWindowHeight();
@@ -37,6 +39,44 @@ export const Game = () => {
   } = React.useContext(SocketIOContext);
   const canvasRef = React.useRef<CanvasDraw>(null);
 
+  const mock = [
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: false,
+    },
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: false,
+    },
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: false,
+    },
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: false,
+    },
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: false,
+    },
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: true,
+    },
+    {
+      message: 'dog',
+      name: '斉藤',
+      isCorrect: false,
+    },
+  ];
+
   // NOTE: 絵が描かれるときのイベント
   React.useEffect(() => {
     if (canvasData === null) {
@@ -51,7 +91,7 @@ export const Game = () => {
     const intervalId = setInterval(() => {
       if (clientLists[sectionNum - 1] !== clientId) return;
       setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
-    }, 50);
+    }, 1000);
 
     if (timeLeft === 0) {
       clearInterval(intervalId);
@@ -114,14 +154,35 @@ export const Game = () => {
         <Typography text={animal} fontSize={30} isBold />
       )}
       <CircularTimer value={timeLeft} />
-      <CanvasDraw
-        ref={canvasRef}
-        style={{ borderRadius: '10px' }}
-        onChange={handleDraw}
-        canvasHeight={height - 300}
-        canvasWidth={width - 500}
-        disabled={clientLists[sectionNum - 1] !== clientId}
-      />
+      <Stack direction="row" spacing={2}>
+        <CanvasDraw
+          ref={canvasRef}
+          style={{ borderRadius: '10px' }}
+          onChange={handleDraw}
+          canvasHeight={height - 300}
+          canvasWidth={width - 500}
+          disabled={clientLists[sectionNum - 1] !== clientId}
+        />
+        <StyledCommentsWrap>
+          {mock.map((item) => {
+            return (
+              <div>
+                <Typography
+                  text={item.message}
+                  fontSize={20}
+                  isBold
+                  isCorrect={item.isCorrect ? true : false}
+                />
+                <Typography
+                  text={item.name}
+                  fontSize={10}
+                  isCorrect={item.isCorrect ? true : false}
+                />
+              </div>
+            );
+          })}
+        </StyledCommentsWrap>
+      </Stack>
       {clientLists[sectionNum - 1] === clientId && (
         <Stack direction="row" spacing={2}>
           <Button
@@ -131,6 +192,23 @@ export const Game = () => {
             onClick={handleClear}
           >
             Clear
+          </Button>
+        </Stack>
+      )}
+      {clientLists[sectionNum - 1] !== clientId && (
+        <Stack direction="row" spacing={0.2}>
+          <TextField
+            id="demo-helper-text-misaligned"
+            label="Answer Here"
+            onChange={() => {}}
+          />
+          <Button
+            variant="outlined"
+            color={'inherit'}
+            startIcon={<Send size={20} />}
+            onClick={handleClear}
+          >
+            send
           </Button>
         </Stack>
       )}

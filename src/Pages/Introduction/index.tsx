@@ -7,6 +7,7 @@ import {
   StyledJoinRoomWrap,
   StyledCreateNewRoomWrap,
   StyledJoinRoomModal,
+  StyledNameModal,
 } from './styled';
 import { useStoreState } from '../../Context/StoreStateProvider';
 import Modal from '@mui/material/Modal';
@@ -15,14 +16,19 @@ import Button from '@mui/material/Button';
 import React from 'react';
 import { TitleText } from '../../Components/TitleText';
 import { SocketIOContext } from '../../Context/SocketIOProvider';
+import { Snackbar } from '@mui/material';
 
 export const Introduction = () => {
-  const { clientId, roomId } = useStoreState();
+  const { clientId, roomId, clientName, setClientName } = useStoreState();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [rommNotFound, setRoomNotFound] = React.useState<boolean>(false);
   const [joinRoomId, setJoinRoomId] = React.useState<string>();
   const navigate = useNavigate();
   const { createNewRoom, joinRoom } = React.useContext(SocketIOContext);
+
+  const [typedClientName, setTypedClientName] = React.useState<
+    string | undefined
+  >();
 
   React.useEffect(() => {
     if (roomId && clientId) {
@@ -38,6 +44,33 @@ export const Introduction = () => {
 
   return (
     <StyledIntroductionWrap>
+      <Snackbar
+        open={!!clientName}
+        message={`Hello ${clientName} :)`}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        onClick={() => setClientName(undefined)}
+      />
+      <Modal open={!clientName} onClose={() => {}}>
+        <StyledNameModal>
+          <TextField
+            id="demo-helper-text-misaligned"
+            label="ENTER YOUR NAME"
+            onChange={(event) => {
+              setTypedClientName(event.target.value);
+            }}
+          />
+          <Button
+            variant="outlined"
+            disabled={typedClientName ? false : true}
+            onClick={() => setClientName(typedClientName)}
+          >
+            SUBMIT
+          </Button>
+        </StyledNameModal>
+      </Modal>
       <Modal
         open={isModalOpen}
         onClose={() => {

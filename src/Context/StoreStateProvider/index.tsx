@@ -13,6 +13,7 @@ type StoreProps = {
   timeLeft: number;
   isDone: boolean;
   animal: string | undefined;
+  clientName: string | undefined;
   setRoomId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayersNum: React.Dispatch<React.SetStateAction<number>>;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,6 +25,7 @@ type StoreProps = {
   setTimeLeft: React.Dispatch<React.SetStateAction<number>>;
   setIsDone: React.Dispatch<React.SetStateAction<boolean>>;
   setAnimal: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setClientName: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 type Children = {
@@ -54,6 +56,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
   const [timeLeft, setTimeLeft] = React.useState<number>(100);
   const [isDone, setIsDone] = React.useState<boolean>(false);
   const [animal, setAnimal] = React.useState<string | undefined>(undefined);
+  const [clientName, setClientName] = React.useState<string | undefined>();
 
   const providerValue = {
     roomId,
@@ -67,6 +70,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     timeLeft,
     isDone,
     animal,
+    clientName,
     setRoomId,
     setPlayersNum,
     setIsStarted,
@@ -78,6 +82,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     setTimeLeft,
     setIsDone,
     setAnimal,
+    setClientName,
   };
 
   return <Store.Provider value={providerValue}>{children}</Store.Provider>;
