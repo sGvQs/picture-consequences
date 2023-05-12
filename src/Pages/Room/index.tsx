@@ -32,7 +32,7 @@ export const Room = () => {
       <Badge badgeContent={playersNum} color="secondary">
         <StyledRoom>
           <>
-            <Lottie path={'/Lottie/rocket-in-space.json'} onClick={() => {}} />
+            <Lottie path={'/Lottie/flying.json'} onClick={() => {}} />
             {isHost ? (
               <>
                 <Typography

@@ -7,6 +7,20 @@ export const StyledGameWrap = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 30px;
+`;
+
+export const StyledHeaderWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+`;
+
+export const StyledPlayerParagraph = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
   gap: 10px;
 `;
 

@@ -18,6 +18,7 @@ export const SocketIOProvider = ({ children }) => {
     sectionNum,
     isDone,
     animal,
+    clientName,
     setRoomId,
     setIsHost,
     setClientId,
@@ -27,6 +28,9 @@ export const SocketIOProvider = ({ children }) => {
     setTimeLeft,
     setSectionNum,
     setIsDone,
+    setPainterName,
+    setClientsMessages,
+    setIsFinishedGame,
   } = useStoreState();
 
   const createNewRoom = () => {
@@ -68,6 +72,16 @@ export const SocketIOProvider = ({ children }) => {
     socket.emit('sending_time', request);
   };
 
+  const sendTypedData = (clientAnswer) => {
+    const request = {
+      clientId: clientId,
+      clientName: clientName,
+      clientAnswer: clientAnswer,
+      roomId: roomId,
+    };
+    socket.emit('sending_client_answer', request);
+  };
+
   socket.on('created_room', (data) => {
     setRoomId(data.roomId);
     setClientId(data.clientId);
@@ -101,8 +115,9 @@ export const SocketIOProvider = ({ children }) => {
     setCanvasData(canvasData);
   });
 
-  socket.on('getting_time', (time) => {
-    setTimeLeft(time);
+  socket.on('getting_time', (response) => {
+    setTimeLeft(response.time);
+    setPainterName(response.clientName);
   });
 
   socket.on('done_drawing', () => {
@@ -114,6 +129,11 @@ export const SocketIOProvider = ({ children }) => {
 
   socket.on('done_game', (point) => {
     console.log(point);
+    setIsFinishedGame(true);
+  });
+
+  socket.on('recieving_clients_answers', (args) => {
+    setClientsMessages(args);
   });
 
   return (
@@ -129,6 +149,7 @@ export const SocketIOProvider = ({ children }) => {
         sendDoneDrawingEvent,
         sendDoneGameEvent,
         sendAnimal,
+        sendTypedData,
       }}
     >
       {children}

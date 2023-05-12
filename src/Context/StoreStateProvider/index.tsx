@@ -1,5 +1,11 @@
 import React from 'react';
-import { useRandomAnimal } from '../../Hooks/useRandomAnimal';
+
+type clientsMessageTypes = {
+  isCorrect: boolean;
+  clientId: string;
+  name: string;
+  message: string;
+};
 
 type StoreProps = {
   roomId: string | undefined;
@@ -14,6 +20,9 @@ type StoreProps = {
   isDone: boolean;
   animal: string | undefined;
   clientName: string | undefined;
+  painterName: string | undefined;
+  clientsMessages: clientsMessageTypes[] | undefined;
+  isFinishedGame: boolean;
   setRoomId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayersNum: React.Dispatch<React.SetStateAction<number>>;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,6 +35,11 @@ type StoreProps = {
   setIsDone: React.Dispatch<React.SetStateAction<boolean>>;
   setAnimal: React.Dispatch<React.SetStateAction<string | undefined>>;
   setClientName: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setPainterName: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setClientsMessages: React.Dispatch<
+    React.SetStateAction<clientsMessageTypes[] | undefined>
+  >;
+  setIsFinishedGame: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type Children = {
@@ -57,6 +71,11 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
   const [isDone, setIsDone] = React.useState<boolean>(false);
   const [animal, setAnimal] = React.useState<string | undefined>(undefined);
   const [clientName, setClientName] = React.useState<string | undefined>();
+  const [painterName, setPainterName] = React.useState<string | undefined>();
+  const [clientsMessages, setClientsMessages] = React.useState<
+    clientsMessageTypes[] | undefined
+  >();
+  const [isFinishedGame, setIsFinishedGame] = React.useState<boolean>(false);
 
   const providerValue = {
     roomId,
@@ -71,6 +90,9 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     isDone,
     animal,
     clientName,
+    painterName,
+    clientsMessages,
+    isFinishedGame,
     setRoomId,
     setPlayersNum,
     setIsStarted,
@@ -83,6 +105,9 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     setIsDone,
     setAnimal,
     setClientName,
+    setPainterName,
+    setClientsMessages,
+    setIsFinishedGame,
   };
 
   return <Store.Provider value={providerValue}>{children}</Store.Provider>;

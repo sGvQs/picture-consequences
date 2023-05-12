@@ -3,7 +3,12 @@ import CanvasDraw from 'react-canvas-draw';
 import React from 'react';
 import { useWindowHeight } from '../../Hooks/useWindowHeight';
 import { useWindowWidth } from '../../Hooks/useWindowWidth';
-import { StyledCommentsWrap, StyledGameWrap } from './styled';
+import {
+  StyledCommentsWrap,
+  StyledGameWrap,
+  StyledHeaderWrap,
+  StyledPlayerParagraph,
+} from './styled';
 import { Typography } from '../../Components/Common/Typography';
 import { useRandomAnimal } from '../../Hooks/useRandomAnimal';
 import { Delete } from '@styled-icons/fluentui-system-filled';
@@ -13,18 +18,24 @@ import Stack from '@mui/material/Stack';
 import { SocketIOContext } from '../../Context/SocketIOProvider';
 import { CircularTimer } from '../../Components/Common/Timer';
 import { TextField } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export const Game = () => {
+  const navigate = useNavigate();
   const height = useWindowHeight();
   const width = useWindowWidth();
   const {
     sectionNum,
     clientLists,
     clientId,
+    clientName,
     roomId,
     canvasData,
     timeLeft,
     animal,
+    painterName,
+    clientsMessages,
+    isFinishedGame,
     setTimeLeft,
     setIsDone,
     setAnimal,
@@ -36,46 +47,10 @@ export const Game = () => {
     sendDoneDrawingEvent,
     sendDoneGameEvent,
     sendAnimal,
+    sendTypedData,
   } = React.useContext(SocketIOContext);
   const canvasRef = React.useRef<CanvasDraw>(null);
-
-  const mock = [
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: false,
-    },
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: false,
-    },
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: false,
-    },
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: false,
-    },
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: false,
-    },
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: true,
-    },
-    {
-      message: 'dog',
-      name: '斉藤',
-      isCorrect: false,
-    },
-  ];
+  const [typedAnswer, setTypedAnswer] = React.useState<string | undefined>();
 
   // NOTE: 絵が描かれるときのイベント
   React.useEffect(() => {
@@ -108,6 +83,7 @@ export const Game = () => {
       const request = {
         time: timeLeft,
         roomId: roomId,
+        clientName: clientName,
       };
       sendTimeLeft(request);
     }
@@ -126,8 +102,14 @@ export const Game = () => {
     setAnimal(randomAnimal);
     if (animal && clientLists[sectionNum - 1] === clientId) {
       sendAnimal();
+      handleClear();
     }
   }, [randomAnimal, animal, sectionNum]);
+
+  React.useEffect(() => {
+    if (!isFinishedGame) return;
+    navigate(`/result/${roomId}`);
+  }, [isFinishedGame]);
 
   const handleClear = () => {
     canvasRef.current?.clear();
@@ -137,6 +119,11 @@ export const Game = () => {
       roomId: roomId,
     };
     sendDrawingData(request);
+  };
+
+  const handleSend = () => {
+    sendTypedData(typedAnswer);
+    setTypedAnswer(undefined);
   };
 
   const handleDraw = () => {
@@ -151,9 +138,20 @@ export const Game = () => {
   return (
     <StyledGameWrap>
       {clientLists[sectionNum - 1] === clientId && (
-        <Typography text={animal} fontSize={30} isBold />
+        <StyledHeaderWrap>
+          <CircularTimer value={timeLeft} />
+          <Typography text={animal} fontSize={30} isBold />
+        </StyledHeaderWrap>
       )}
-      <CircularTimer value={timeLeft} />
+      {clientLists[sectionNum - 1] !== clientId && painterName && (
+        <StyledHeaderWrap>
+          <CircularTimer value={timeLeft} />
+          <StyledPlayerParagraph>
+            <Typography text={painterName} fontSize={30} isBold />
+            <Typography text={'is drawing'} fontSize={20} />
+          </StyledPlayerParagraph>
+        </StyledHeaderWrap>
+      )}
       <Stack direction="row" spacing={2}>
         <CanvasDraw
           ref={canvasRef}
@@ -164,23 +162,24 @@ export const Game = () => {
           disabled={clientLists[sectionNum - 1] !== clientId}
         />
         <StyledCommentsWrap>
-          {mock.map((item) => {
-            return (
-              <div>
-                <Typography
-                  text={item.message}
-                  fontSize={20}
-                  isBold
-                  isCorrect={item.isCorrect ? true : false}
-                />
-                <Typography
-                  text={item.name}
-                  fontSize={10}
-                  isCorrect={item.isCorrect ? true : false}
-                />
-              </div>
-            );
-          })}
+          {clientsMessages &&
+            clientsMessages.map((item) => {
+              return (
+                <div>
+                  <Typography
+                    text={item.message}
+                    fontSize={20}
+                    isBold
+                    isCorrect={item.isCorrect ? true : false}
+                  />
+                  <Typography
+                    text={item.name}
+                    fontSize={10}
+                    isCorrect={item.isCorrect ? true : false}
+                  />
+                </div>
+              );
+            })}
         </StyledCommentsWrap>
       </Stack>
       {clientLists[sectionNum - 1] === clientId && (
@@ -200,13 +199,15 @@ export const Game = () => {
           <TextField
             id="demo-helper-text-misaligned"
             label="Answer Here"
-            onChange={() => {}}
+            onChange={(event) => {
+              setTypedAnswer(event.target.value);
+            }}
           />
           <Button
             variant="outlined"
             color={'inherit'}
             startIcon={<Send size={20} />}
-            onClick={handleClear}
+            onClick={handleSend}
           >
             send
           </Button>

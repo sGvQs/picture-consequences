@@ -4,6 +4,7 @@ import { Introduction } from './Introduction';
 import { Room } from './Room';
 import { useStoreState } from '../Context/StoreStateProvider';
 import { Game } from './Game';
+import { Result } from './Result';
 import React from 'react';
 
 export const App = () => {
@@ -17,6 +18,7 @@ export const App = () => {
           <Route path={`/`} element={<Introduction />} />
           <Route path={`/roomId/${roomId}`} element={<Room />} />
           <Route path={`/game/${roomId}`} element={<Game />} />
+          <Route path={`/result/${roomId}`} element={<Result />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

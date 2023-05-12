@@ -55,6 +55,12 @@ export const Introduction = () => {
       />
       <Modal open={!clientName} onClose={() => {}}>
         <StyledNameModal>
+          <Lottie
+            path={'/Lottie/run.json'}
+            onClick={() => {
+              createNewRoom();
+            }}
+          />
           <TextField
             id="demo-helper-text-misaligned"
             label="ENTER YOUR NAME"
@@ -108,7 +114,7 @@ export const Introduction = () => {
         <StyledCreateNewRoomWrap>
           <Typography text={'CREATE NEW ROOM'} fontSize={20} isBold={true} />
           <Lottie
-            path={'/Lottie/earth-and-connections.json'}
+            path={'/Lottie/drawing.json'}
             onClick={() => {
               createNewRoom();
             }}
@@ -117,7 +123,7 @@ export const Introduction = () => {
         <StyledJoinRoomWrap>
           <Typography text={'JOIN THE ROOM'} fontSize={20} isBold={true} />
           <Lottie
-            path={'/Lottie/joinearth.json'}
+            path={'/Lottie/connection.json'}
             onClick={() => {
               setIsModalOpen(true);
             }}
