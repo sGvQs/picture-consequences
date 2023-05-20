@@ -23,6 +23,7 @@ type StoreProps = {
   painterName: string | undefined;
   clientsMessages: clientsMessageTypes[] | undefined;
   isFinishedGame: boolean;
+  currentPoint: number;
   setRoomId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayersNum: React.Dispatch<React.SetStateAction<number>>;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,6 +41,7 @@ type StoreProps = {
     React.SetStateAction<clientsMessageTypes[] | undefined>
   >;
   setIsFinishedGame: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrentPoint: React.Dispatch<React.SetStateAction<number>>;
 };
 
 type Children = {
@@ -76,6 +78,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     clientsMessageTypes[] | undefined
   >();
   const [isFinishedGame, setIsFinishedGame] = React.useState<boolean>(false);
+  const [currentPoint, setCurrentPoint] = React.useState<number>(0);
 
   const providerValue = {
     roomId,
@@ -93,6 +96,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     painterName,
     clientsMessages,
     isFinishedGame,
+    currentPoint,
     setRoomId,
     setPlayersNum,
     setIsStarted,
@@ -108,6 +112,7 @@ export const StoreStateProvider: React.FC<Children> = ({ children }) => {
     setPainterName,
     setClientsMessages,
     setIsFinishedGame,
+    setCurrentPoint,
   };
 
   return <Store.Provider value={providerValue}>{children}</Store.Provider>;

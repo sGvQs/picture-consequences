@@ -19,6 +19,7 @@ export const SocketIOProvider = ({ children }) => {
     isDone,
     animal,
     clientName,
+    timeLeft,
     setRoomId,
     setIsHost,
     setClientId,
@@ -123,8 +124,8 @@ export const SocketIOProvider = ({ children }) => {
   socket.on('done_drawing', () => {
     if (isDone) return;
     setIsDone(true);
-    setSectionNum(sectionNum + 1);
     setTimeLeft(100);
+    setSectionNum(sectionNum + 1);
   });
 
   socket.on('done_game', (point) => {

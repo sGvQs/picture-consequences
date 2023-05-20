@@ -36,9 +36,11 @@ export const Game = () => {
     painterName,
     clientsMessages,
     isFinishedGame,
+    currentPoint,
     setTimeLeft,
     setIsDone,
     setAnimal,
+    setCurrentPoint,
   } = useStoreState();
 
   const {
@@ -49,8 +51,11 @@ export const Game = () => {
     sendAnimal,
     sendTypedData,
   } = React.useContext(SocketIOContext);
+
   const canvasRef = React.useRef<CanvasDraw>(null);
   const [typedAnswer, setTypedAnswer] = React.useState<string | undefined>();
+  const [isCorrectAnswered, setIsCorrectAnswered] =
+    React.useState<boolean>(false);
 
   // NOTE: 絵が描かれるときのイベント
   React.useEffect(() => {
@@ -68,17 +73,31 @@ export const Game = () => {
       setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
     }, 1000);
 
-    if (timeLeft === 0) {
-      clearInterval(intervalId);
-      if (clientLists[sectionNum - 1] === clientId) {
-        sendDoneDrawingEvent();
-        if (sectionNum === clientLists.length) {
-          console.log('finished');
-          sendDoneGameEvent();
-        }
-      }
+    // NOTE: 回答権をリセット
+    if (timeLeft === 100) {
+      setIsCorrectAnswered(false);
     }
 
+    // NOTE: タイムアップ（10秒前に確定させている、0にすると初回時に発火してしまうため）
+    if (timeLeft === 10) {
+      setTimeout(() => {
+        console.log('times up');
+        clearInterval(intervalId);
+
+        // NOTE: お絵描き終了イベント
+        if (clientLists[sectionNum - 1] === clientId) {
+          sendDoneDrawingEvent();
+
+          // NOTE: ゲーム自体が終了
+          if (sectionNum === clientLists.length) {
+            sendDoneGameEvent();
+            console.log('me send end');
+          }
+        }
+      }, 10000);
+    }
+
+    // NOTE: 時間を送信するのは描いている人
     if (clientLists[sectionNum - 1] === clientId) {
       const request = {
         time: timeLeft,
@@ -111,6 +130,25 @@ export const Game = () => {
     navigate(`/result/${roomId}`);
   }, [isFinishedGame]);
 
+  React.useEffect(() => {
+    if (!clientsMessages) return;
+    // NOTE: 最新のメッセージが正解か
+    if (!clientsMessages[clientsMessages.length - 1].isCorrect) return;
+
+    // NOTE: 正解だった場合、回答欄を表示させない
+    setIsCorrectAnswered(true);
+    // NOTE: 正解のメッセージを送信した人が自分か
+    if (clientsMessages[clientsMessages.length - 1].clientId === clientId) {
+      setCurrentPoint(currentPoint + timeLeft);
+    }
+
+    // NOTE: 最新のメッセージが正解時、自分が描いている側か
+    if (clientLists[sectionNum - 1] === clientId) {
+      setCurrentPoint(currentPoint + timeLeft);
+    }
+  }, [clientsMessages]);
+
+  // NOTE: 絵のデータを削除
   const handleClear = () => {
     canvasRef.current?.clear();
     if (clientLists[sectionNum - 1] !== clientId) return;
@@ -121,11 +159,13 @@ export const Game = () => {
     sendDrawingData(request);
   };
 
+  // NOTE: 回答を送信
   const handleSend = () => {
     sendTypedData(typedAnswer);
     setTypedAnswer(undefined);
   };
 
+  // NOTE: 書いている情報を送信
   const handleDraw = () => {
     if (clientLists[sectionNum - 1] !== clientId) return;
     const request = {
@@ -194,7 +234,7 @@ export const Game = () => {
           </Button>
         </Stack>
       )}
-      {clientLists[sectionNum - 1] !== clientId && (
+      {clientLists[sectionNum - 1] !== clientId && !isCorrectAnswered && (
         <Stack direction="row" spacing={0.2}>
           <TextField
             id="demo-helper-text-misaligned"
